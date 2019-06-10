@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "3095ab9d-3e15-4b44-9b14-1f90c3a32f12",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Avata2": {
+      "ver": "1.0.3",
+      "uuid": "8adbbe05-60f3-47c2-84fa-fb9b837eb657",
+      "rawTextureUuid": "3095ab9d-3e15-4b44-9b14-1f90c3a32f12",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 480,
+      "height": 467,
+      "rawWidth": 480,
+      "rawHeight": 467,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "78d3d269-1565-408f-9edb-8eedb312e096",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Block Puzzle": {
+      "ver": "1.0.3",
+      "uuid": "adaac249-7f58-485a-97ae-f6eed7566e44",
+      "rawTextureUuid": "78d3d269-1565-408f-9edb-8eedb312e096",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 120,
+      "height": 120,
+      "rawWidth": 120,
+      "rawHeight": 120,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

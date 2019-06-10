@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "883376be-0973-476a-b377-4173482cf0a3",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "BarTableHero": {
+      "ver": "1.0.3",
+      "uuid": "cb792f9d-5b28-43e3-87a3-393842b022ab",
+      "rawTextureUuid": "883376be-0973-476a-b377-4173482cf0a3",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 103,
+      "height": 23,
+      "rawWidth": 103,
+      "rawHeight": 23,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "6c226e2a-8ec3-40c8-87d0-78958eb4df95",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "bg_shadow_heroes": {
+      "ver": "1.0.3",
+      "uuid": "9b0c1cf7-3c0a-4771-8583-7f831c8aaef4",
+      "rawTextureUuid": "6c226e2a-8ec3-40c8-87d0-78958eb4df95",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 49,
+      "height": 49,
+      "rawWidth": 49,
+      "rawHeight": 49,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

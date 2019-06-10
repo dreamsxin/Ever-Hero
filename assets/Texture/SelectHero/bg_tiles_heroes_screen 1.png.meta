@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "df75ee5a-9a69-4269-a153-1445ee78d4f9",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "bg_tiles_heroes_screen 1": {
+      "ver": "1.0.3",
+      "uuid": "46f2235c-bf82-490b-8c52-01b4c5ea081b",
+      "rawTextureUuid": "df75ee5a-9a69-4269-a153-1445ee78d4f9",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 109,
+      "height": 109,
+      "rawWidth": 109,
+      "rawHeight": 109,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
