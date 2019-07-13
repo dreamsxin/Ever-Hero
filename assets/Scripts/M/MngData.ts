@@ -21,4 +21,8 @@ export default class MngData extends cc.Component {
     public wing: sp.SkeletonData[] = new Array();
     @property(cc.SpriteFrame)
     public spBoss: cc.SpriteFrame[] = new Array();
+    @property(cc.SpriteFrame)
+    public iconItemChange: cc.SpriteFrame[] = new Array();
+    @property(cc.Size)
+    public sizeItemChange: cc.Size[] = new Array();
 }

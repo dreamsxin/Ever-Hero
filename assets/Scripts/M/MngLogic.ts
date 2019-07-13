@@ -43,6 +43,7 @@ export default class MngLogic extends cc.Component {
 
 
     start() {
+        cc.director.resume();
         this.Ware();
     }
     public Ware() {
@@ -215,23 +216,39 @@ export default class MngLogic extends cc.Component {
     }
     public RandomItem(point: cc.Vec2) {
         let random = Mathf.Random(0, 100.0);
-        if (random < 5) {
-            Mng.mng.pool.GetItem(point).Init(0);
-        }
-        else if (random < 7) {
-            Mng.mng.pool.GetItem(point).Init(1);
-        }
-        else if (random < 10) {
-            Mng.mng.pool.GetItem(point).Init(2);
-        }
-        else if (random < 12) {
-            Mng.mng.pool.GetItem(point).Init(3);
-        }
-        else if (random < 14) {
-            Mng.mng.pool.GetItem(point).Init(4);
+        if (this.player.countBullet < 3) {
+            if (random < 10) {
+                Mng.mng.pool.GetItem(point).Init(0);
+            }
+            else if (random < 14) {
+                Mng.mng.pool.GetItem(point).Init(3);
+            }
+            else {
+                Mng.mng.pool.GetGold(point).Init();
+            }
         }
         else {
-            Mng.mng.pool.GetGold(point).Init();
+            if (random < 5) {
+                Mng.mng.pool.GetItem(point).Init(0);
+            }
+            else if (random < 7) {
+                Mng.mng.pool.GetItem(point).Init(1);
+            }
+            else if (random < 10) {
+                Mng.mng.pool.GetItem(point).Init(2);
+            }
+            else if (random < 12) {
+                Mng.mng.pool.GetItem(point).Init(3);
+            }
+            else if (random < 14) {
+                Mng.mng.pool.GetItem(point).Init(4);
+            }
+            else if (random < 16) {
+                Mng.mng.pool.GetItemChange(point).Init();
+            }
+            else {
+                Mng.mng.pool.GetGold(point).Init();
+            }
         }
     }
     public GetWare() {
@@ -241,7 +258,16 @@ export default class MngLogic extends cc.Component {
     public TurnRealBattle(time: number = 0) {
         if (this.isZen) {
             this.scheduleOnce(() => {
-                let index = Mathf.Random(0, 8);
+                let index;
+                if (MngLogic.indexLevel > 15) {
+                    index = Mathf.Random(0, 8);
+                }
+                else {
+                    if (Mathf.Random(0, 100) < 70)
+                        index = Mathf.Random(0, 5);
+                    else
+                        index = Mathf.Random(0, 8);
+                }
                 if (index == 0) {
                     let count = Mathf.Random(1, 5);
                     let pointX = new Array();
@@ -352,7 +378,7 @@ export default class MngLogic extends cc.Component {
                         Mng.mng.pool.GetLineRocket().Init(indexRandom * 70);
                     }
                 }
-                this.TurnRealBattle(Mathf.Random(2.5, 3));
+                this.TurnRealBattle((this.indexWare < 4) ? Mathf.Random(3.5, 5) : Mathf.Random(2.5, 3));
             }, time);
         }
     }

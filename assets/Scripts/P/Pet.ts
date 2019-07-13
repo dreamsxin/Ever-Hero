@@ -22,14 +22,28 @@ export default class Pet extends cc.Component {
     private point: number;
     private damageUpgrade: number = 0;
     private speed: number[] = [8, 8];
-    private timeAttack: number[] = [0.3, 0.3, 0.7, 4];
-    private index: number;
-    private targer: cc.Node;
+    private timeAttack: number[] = [0.3, 0.3, 0.3, 4];
+    public index: number = -1;
+    private target: cc.Node;
+
     start() {
-        this.index = PlayerPrefs.GetNumber("SelectPet" + (this.isLeft ? "Left" : "Right"));
         this.point = this.isLeft ? -120 : 120;
+    }
+
+    public Init() {
+        this.index = PlayerPrefs.GetNumber("SelectPet" + (this.isLeft ? "Left" : "Right"));
         this.damageUpgrade = MngHero.dataPet[this.index].power[PlayerPrefs.GetNumber("LevelUpgradePet" + this.index)];
         this.spr.spriteFrame = Mng.mng.data.pet[this.index];
+        this.node.active = true;
+        this.unschedule(this.Shoot);
+        this.schedule(this.Shoot, this.timeAttack[this.index]);
+    }
+    public ChangePet(index: number = this.index) {
+        this.index = index;
+        this.damageUpgrade = MngHero.dataPet[this.index].power[PlayerPrefs.GetNumber("LevelUpgradePet" + this.index)];
+        this.spr.spriteFrame = Mng.mng.data.pet[this.index];
+        this.node.active = true;
+        this.unschedule(this.Shoot);
         this.schedule(this.Shoot, this.timeAttack[this.index]);
     }
 
@@ -56,56 +70,69 @@ export default class Pet extends cc.Component {
     }
     private angle: number = 0;
     private Shoot2() {
-        if (this.targer != null && this.targer.active) {
+        if (this.target != null && this.target.active) {
             this.MathfRotation();
+            let tmp = Mng.mng.pool.GetBulletPlayer(this.node.position, this.angle);
+            tmp.Shoot(10, 0.6, 15, 1 * this.damageUpgrade + Mng.mng.logic.player.petUpgrade);
         }
-        else {
-            this.targer = null;
-            this.angle = 0;
-            this.col.enabled = true;
-            this.checkEnemy.play();
-        }
-        let tmp = Mng.mng.pool.GetBulletPlayer(this.node.position, this.angle);
-        tmp.Shoot(10, 0.6, 15, 1 * this.damageUpgrade + Mng.mng.logic.player.petUpgrade);
+        this.target = null;
+        this.angle = 0;
+        this.col.enabled = true;
+        this.checkEnemy.play();
     }
     private Shoot3() {
-        if (this.targer != null && this.targer.active) {
-            let tmp = Mng.mng.pool.GetBulletPlayer(this.node.position, Mathf.Random(0, 360));
-            tmp.target = this.targer;
-            tmp.Shoot(11, 1, 10, 1 * this.damageUpgrade + Mng.mng.logic.player.petUpgrade, true);
-        }
-        else {
-            this.targer = null;
-            this.col.enabled = true;
-            this.checkEnemy.play();
-        }
-
+        let tmp = Mng.mng.pool.GetBulletPlayer(this.node.position, Mathf.Random(-5, 5.0));
+        tmp.Shoot(11, 1, 10, 1 * this.damageUpgrade + Mng.mng.logic.player.petUpgrade);
     }
     private Shoot4() {
         this.laser.active = true;
     }
     onCollisionEnter(other) {
-        if (this.targer == null && other.node.group == "Enemy") {
-            this.targer = other.node;
+        if (this.target == null && other.node.group == "Enemy") {
+            this.target = other.node;
             this.col.enabled = false;
         }
     }
     private MathfRotation() {
-        if (this.targer.position != this.node.position) {
-            if (this.targer.y > this.node.y) {
-                if (this.targer.x < this.node.x) {
-                    this.angle = -Math.atan(Math.abs((this.node.x - this.targer.x) / (this.node.y - this.targer.y))) * 180 / Math.PI;
+        if (this.target.name == "Enemy") {
+            if (this.target.position != this.node.position) {
+                if (this.target.y > this.node.y) {
+                    if (this.target.x < this.node.x) {
+                        this.angle = -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+                    }
+                    else {
+                        this.angle = Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+                    }
                 }
                 else {
-                    this.angle = Math.atan(Math.abs((this.node.x - this.targer.x) / (this.node.y - this.targer.y))) * 180 / Math.PI;
+                    if (this.target.x > this.node.x) {
+                        this.angle = -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+                    }
+                    else {
+                        this.angle = Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+                    }
                 }
             }
-            else {
-                if (this.targer.x > this.node.x) {
-                    this.angle = -Math.atan(Math.abs((this.node.x - this.targer.x) / (this.node.y - this.targer.y))) * 180 / Math.PI + 180;
+        }
+        else {
+            let position = this.target.parent.convertToWorldSpaceAR(this.target.position);
+            let point = new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, position.y - Mng.mng.logic.player.halfHeight);
+            if (point != this.node.position) {
+                if (point.y > this.node.y) {
+                    if (point.x < this.node.x) {
+                        this.angle = -Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI;
+                    }
+                    else {
+                        this.angle = Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI;
+                    }
                 }
                 else {
-                    this.angle = Math.atan(Math.abs((this.node.x - this.targer.x) / (this.node.y - this.targer.y))) * 180 / Math.PI + 180;
+                    if (point.x > this.node.x) {
+                        this.angle = -Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI + 180;
+                    }
+                    else {
+                        this.angle = Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI + 180;
+                    }
                 }
             }
         }

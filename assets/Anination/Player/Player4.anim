@@ -54,6 +54,26 @@
             }
           ]
         }
+      },
+      "WingRight": {
+        "props": {
+          "active": [
+            {
+              "frame": 0,
+              "value": false
+            }
+          ]
+        }
+      },
+      "WingLeft": {
+        "props": {
+          "active": [
+            {
+              "frame": 0,
+              "value": false
+            }
+          ]
+        }
       }
     }
   },

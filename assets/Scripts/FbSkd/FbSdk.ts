@@ -268,9 +268,6 @@ export default class FbSdk extends cc.Component {
         });
         // });
     }
-
-
-
     private ChoosePlayer(callback = null) {
         if (this.FBInstant != null) {
             this.FBInstant.context
@@ -314,7 +311,32 @@ export default class FbSdk extends cc.Component {
             })
             .catch(error => console.error(error));
     }
-
+    public AddScoreLevel(myScore: number, callback = null) {
+        if (this.FBInstant == null) return;
+        let self = this;
+        this.FBInstant
+            .getLeaderboardAsync('Level')
+            .then((leaderboard) => {
+                return leaderboard.setScoreAsync(myScore, '');
+            })
+            .then(() => {
+                console.log('Score saved');
+                if (callback != null)
+                    callback.apply();
+            })
+            .catch(error => console.error(error));
+    }
+    public GetRankFriendLevel(callback = null) {
+        if (this.FBInstant == null) return;
+        this.FBInstant.getLeaderboardAsync('Level')
+            .then((leaderboard) => {
+                return leaderboard.getConnectedPlayerEntriesAsync(100, 0);
+            })
+            .then((entries) => {
+                if (callback != null)
+                    callback(entries).apply();
+            });
+    }
     public GetRankWorldEndless(callback = null) {
         if (this.FBInstant == null) return;
         this.FBInstant

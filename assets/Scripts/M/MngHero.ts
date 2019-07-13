@@ -76,6 +76,8 @@ export default class MngHero extends cc.Component {
     public warningPetLeft: cc.Animation;
     @property(cc.Animation)
     public warningPetRight: cc.Animation;
+    @property(cc.Node)
+    public tutorial: cc.Node;
 
     @property(cc.Sprite)
     public powerUpgradeFill: cc.Sprite[] = new Array();
@@ -144,7 +146,11 @@ export default class MngHero extends cc.Component {
             this.CheckWarningPetStart();
         }
     }
-
+    onEnable() {
+        if (!PlayerPrefs.GetBool("TapTutorial") && !this.tutorial.active) {
+            this.tutorial.active = true;
+        }
+    }
     start() {
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 5; j++) {
@@ -199,6 +205,10 @@ export default class MngHero extends cc.Component {
         MngSound.mng.PlaySound(0);
         this.tabHero.active = true;
         this.CheckWarningPlayer();
+        if (this.tutorial.active)
+            this.tutorial.active = false;
+        if (!PlayerPrefs.GetBool("TapTutorial"))
+            PlayerPrefs.SetBool("TapTutorial", true);
     }
     public ShowPlayerUpgrade(index: number, isClick: boolean = false) {
         if (isClick) {
@@ -358,6 +368,10 @@ export default class MngHero extends cc.Component {
         this.typePet.string = (this.isPetLeft ? "LEFT" : "RIGHT") + " PET";
         this.tabPet.active = true;
         this.CheckWarningPet();
+        if (this.tutorial.active)
+            this.tutorial.active = false;
+        if (!PlayerPrefs.GetBool("TapTutorial"))
+            PlayerPrefs.SetBool("TapTutorial", true);
     }
     public ShowPetUpgrade(index: number, isClick: boolean = false) {
         if (isClick) {

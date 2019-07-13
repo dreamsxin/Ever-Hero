@@ -3,6 +3,7 @@ import Mathf from "../M/Mathf";
 import MngHero from "../M/MngHero";
 import PlayerPrefs from "../P/PlayerPrefs";
 import MngSound from "../M/MngSound";
+import WarningEnemy from "../W/WarningEnemy";
 
 const { ccclass, property } = cc._decorator;
 
@@ -307,10 +308,28 @@ export default class Enemy extends cc.Component {
             }
             else if (other.tag == 2 && !this.isHitLaser) {
                 this.isHitLaser = true;
+                this.smoke = Mng.mng.pool.GetSmoke(this.node);
+                this.smoke.node.setPosition(0, 0);
+                this.smoke.node.active = true;
+                this.smoke.resetSystem();
                 this.schedule(this.HitLaser, 0.1);
             }
         }
+        if (other.node.group == "Left" && other.node.name == "Left") {
+            if (this.isLoopPath) {
+                this.warningTmp = Mng.mng.pool.GetWarningEnemy(new cc.Vec2(-316 + Mathf.Random(0, 20), this.node.y));
+                this.warningTmp.Init(this.node);
+            }
+        }
+        else if (other.node.group == "Right" && other.node.name == "Right") {
+            if (this.isLoopPath) {
+                this.warningTmp = Mng.mng.pool.GetWarningEnemy(new cc.Vec2(316 - Mathf.Random(0, 20), this.node.y));
+                this.warningTmp.Init(this.node);
+            }
+        }
     }
+    private smoke: cc.ParticleSystem;
+    private warningTmp: WarningEnemy;
     private isHitLaser: boolean = false;
     private HitLaser() {
         if (this.hp > 0) {
@@ -321,6 +340,7 @@ export default class Enemy extends cc.Component {
                 Mng.mng.logic.countEnemy--;
                 let tmp = Mng.mng.pool.GetExEnemy(this.node.position);
                 tmp.Play();
+                this.smoke.node.active = false;
                 MngSound.mng.PlaySound(3);
                 if (this.isRotation) {
                     Mng.mng.logic.countEnemyTmp--;
@@ -343,13 +363,21 @@ export default class Enemy extends cc.Component {
         if (other.node.group == "BulletPet") {
             if (other.tag == 2 && this.isHitLaser) {
                 this.isHitLaser = false;
+                this.smoke.node.active = false;
                 this.unschedule(this.HitLaser);
+            }
+        }
+        else if ((other.node.group == "Left" && other.node.name == "Left") || (other.node.group == "Right" && other.node.name == "Right")) {
+            if (this.isLoopPath) {
+                if (this.warningTmp != null)
+                    this.warningTmp.node.active = false;
             }
         }
     }
     onDisable() {
         if (this.isHitLaser) {
             this.isHitLaser = false;
+            this.smoke.node.active = false;
             this.unschedule(this.HitLaser);
         }
         this.unscheduleAllCallbacks();

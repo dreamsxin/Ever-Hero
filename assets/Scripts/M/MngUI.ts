@@ -90,7 +90,12 @@ export default class MngUI extends cc.Component {
         if (PlayerPrefs.GetNumber('LevelUnlock') < MngLogic.indexLevel) {
             PlayerPrefs.SetNumber('LevelUnlock', MngLogic.indexLevel);
         }
-        FbSdk.sdk.ShowInterstitial();
+        this.scheduleOnce(() => {
+            FbSdk.sdk.ShowInterstitial();
+        }, 1);
+
+        FbSdk.sdk.AddScoreLevel(MngLogic.indexLevel);
+        FbSdk.sdk.LogEvent("UserLevel" + MngLogic.indexLevel);
     }
     public SaveMe() {
         cc.director.pause();
@@ -126,7 +131,9 @@ export default class MngUI extends cc.Component {
         this.scoreGameover.string = this.scoreVaule.toString().split(".")[0];
         this.goldGameover.string = this.goldVaule.toString().split(".")[0];
         PlayerPrefs.SetNumber("Gold", PlayerPrefs.GetNumber("Gold") + Number(this.goldVaule.toString().split(".")[0]));
-        FbSdk.sdk.ShowInterstitial();
+        this.scheduleOnce(() => {
+            FbSdk.sdk.ShowInterstitial();
+        }, 1);
         if (Home.mode == 1)
             FbSdk.sdk.AddScoreBoss(Number(this.scoreGameover.string));
         else if (Home.mode == 2)

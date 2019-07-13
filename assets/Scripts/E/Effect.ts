@@ -9,6 +9,8 @@ export default class Effect extends cc.Component {
     public timeLife: number = 0;
     @property(cc.Animation)
     public anim: cc.Animation;
+    @property(cc.ParticleSystem)
+    public par: cc.ParticleSystem;
 
     Play() {
         this.node.rotation = Mathf.Random(0, 360);
@@ -24,5 +26,9 @@ export default class Effect extends cc.Component {
         this.scheduleOnce(() => {
             this.node.active = false;
         }, this.timeLife);
+    }
+    public PlaySmoke() {
+        this.node.active = true;
+        this.par.resetSystem();
     }
 }

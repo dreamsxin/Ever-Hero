@@ -1,28 +1,26 @@
 [
   {
-    "name": "French",
-    "id": "586208338561197",
-    "lg": "fr"
+    "name": "Candy Jewel",
+    "id": "1039307632940673"
   },
   {
-    "name": "Pictoword",
-    "id": "2295495483857774",
-    "lg": "en"
+    "name": "Hungry Hamster",
+    "id": "560073921162890"
   },
   {
-    "name": "Brick Breaker",
-    "id": "2251486548422758"
+    "name": "Fruit Ninja",
+    "id": "836840649987672"
   },
   {
-    "name": "Block Puzzle",
-    "id": "352452782150839"
+    "name": "Bubble Shooter",
+    "id": "2266019093638506"
   },
   {
-    "name": "Solitaire Classic",
-    "id": "623378131452365"
+    "name": "Tiny Green Escape",
+    "id": "428105314432480"
   },
   {
-    "name": "Game of Thrones",
-    "id": "391436305025802"
+    "name": "Furious Road",
+    "id": "2333887540167911"
   }
 ]

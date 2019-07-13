@@ -31,7 +31,7 @@ export default class MngEndless extends cc.Component {
                 FbSdk.sdk.GetRankPlayerBoss((entry) => {
                     let tmp = Home.mng.GetElement(this.content);
                     tmp.node.position = new cc.Vec2(0, -90 - 160 * indexRankPlayer);
-                    tmp.Init(indexRankPlayer.toString(), entry.getPlayer().getName(), entry.getScore(), entry.getPlayer().getPhoto());
+                    tmp.Init((indexRankPlayer + 1).toString(), entry.getPlayer().getName(), entry.getScore(), entry.getPlayer().getPhoto());
                 });
             }
             if (indexRankPlayer > 3)
@@ -44,5 +44,6 @@ export default class MngEndless extends cc.Component {
     }
     public Fight() {
         Loading.Load("Gameplay");
+        FbSdk.sdk.LogEvent("BossFight");
     }
 }

@@ -9,6 +9,8 @@ import Enemy2 from "../E/Enemy2";
 import Rocket from "../R/Rocket";
 import LineRocket from "../L/LineRocket";
 import Mng from "./Mng";
+import WarningEnemy from "../W/WarningEnemy";
+import ItemChange from "../I/ItemChange";
 
 const { ccclass, property } = cc._decorator;
 
@@ -28,13 +30,19 @@ export default class MngPool extends cc.Component {
     @property(cc.Prefab)
     public exEnemyPrefab: cc.Prefab;
     @property(cc.Prefab)
+    public smokePrefab: cc.Prefab;
+    @property(cc.Prefab)
     public itemPrefab: cc.Prefab;
+    @property(cc.Prefab)
+    public itemChangePrefab: cc.Prefab;
     @property(cc.Prefab)
     public goldPrefab: cc.Prefab;
     @property(cc.Prefab)
     public rocketPrefab: cc.Prefab;
     @property(cc.Prefab)
     public lineRocketPrefab: cc.Prefab;
+    @property(cc.Prefab)
+    public warningEnemyPrefab: cc.Prefab;
 
     @property(cc.Node)
     public bulletParent: cc.Node;
@@ -53,9 +61,12 @@ export default class MngPool extends cc.Component {
     public enemy2s: Enemy2[] = new Array();
     public exEnemys: Effect[] = new Array();
     public items: Item[] = new Array();
+    public itemChanges: ItemChange[] = new Array();
     public golds: Gold[] = new Array();
     public rockets: Rocket[] = new Array();
     public lineRockets: LineRocket[] = new Array();
+    public warningEnemys: WarningEnemy[] = new Array();
+    public smokes: cc.ParticleSystem[] = new Array();
 
 
     public GetBulletPlayer(point: cc.Vec2, angle: number): BulletPlayer {
@@ -187,6 +198,26 @@ export default class MngPool extends cc.Component {
         this.items[this.items.length] = itemTmp;
         return itemTmp;
     }
+
+    public GetItemChange(point: cc.Vec2): ItemChange {
+        let index = this.itemChanges.findIndex(e => !e.node.activeInHierarchy);
+        if (index == -1)
+            return this.RequestItemChange(point);
+        else {
+            this.itemChanges[index].node.setPosition(point);
+            return this.itemChanges[index];
+        }
+    }
+
+    private RequestItemChange(point: cc.Vec2): ItemChange {
+        let tmp = cc.instantiate(this.itemChangePrefab);
+        this.itemParent.addChild(tmp);
+        tmp.setPosition(point);
+        let itemTmp = tmp.getComponent(ItemChange);
+        this.itemChanges[this.itemChanges.length] = itemTmp;
+        return itemTmp;
+    }
+
     public GetGold(point: cc.Vec2): Gold {
         let index = this.golds.findIndex(e => !e.node.activeInHierarchy);
         if (index == -1)
@@ -237,5 +268,41 @@ export default class MngPool extends cc.Component {
         let goldTmp = tmp.getComponent(LineRocket);
         this.lineRockets[this.lineRockets.length] = goldTmp;
         return goldTmp;
+    }
+
+    public GetWarningEnemy(point: cc.Vec2): WarningEnemy {
+        let index = this.warningEnemys.findIndex(b => !b.node.activeInHierarchy);
+        if (index >= 0) {
+            this.warningEnemys[index].node.setPosition(point);
+            return this.warningEnemys[index];
+        }
+        else
+            return this.RequestWarningEnemy(point);
+    }
+    private RequestWarningEnemy(point: cc.Vec2): WarningEnemy {
+        let tmp = cc.instantiate(this.warningEnemyPrefab);
+        tmp.setPosition(point);
+        this.enemyParent.addChild(tmp);
+        let enemy = tmp.getComponent(WarningEnemy);
+        this.warningEnemys[this.warningEnemys.length] = enemy;
+        return enemy;
+    }
+
+    public GetSmoke(parent: cc.Node): cc.ParticleSystem {
+        let index = this.smokes.findIndex(b => !b.node.activeInHierarchy);
+        if (index >= 0) {
+            this.smokes[index].node.parent = null;
+            parent.addChild(this.smokes[index].node);
+            return this.smokes[index];
+        }
+        else
+            return this.RequestSmoke(parent);
+    }
+    private RequestSmoke(parent: cc.Node): cc.ParticleSystem {
+        let tmp = cc.instantiate(this.smokePrefab);
+        parent.addChild(tmp);
+        let smoke = tmp.getComponent(cc.ParticleSystem);
+        this.smokes[this.smokes.length] = smoke;
+        return smoke;
     }
 }

@@ -5,6 +5,7 @@ import Loading from "../L/Loading";
 import MngHero from "../M/MngHero";
 import MoreGame from "../../resources/MoreGame/Script/MoreGame";
 import ElementLeader from "../E/ElementLeader";
+import FbSdk from "../FbSkd/FbSdk";
 
 const { ccclass, property } = cc._decorator;
 
@@ -94,6 +95,15 @@ export default class Home extends cc.Component {
             }
             else
                 this.CheckWarningHero();
+        }
+        if (FbSdk.sdk.fbPlatform != "IOS") {
+            this.buttonHome[4].parent.active = true;
+        }
+        else {
+            for (let i = 0; i < 4; i++) {
+                this.buttonHome[i].parent.setPositionX(180 * (i - 1.5));
+                this.buttonHome[i].parent.setContentSize(175, 106.5);
+            }
         }
     }
 

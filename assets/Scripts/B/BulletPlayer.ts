@@ -62,21 +62,45 @@ export default class BulletPlayer extends cc.Component {
             this.target = null;
     }
     private MathfRotation(): number {
-        if (this.target.position != this.node.position) {
-            if (this.target.y > this.node.y) {
-                if (this.target.x < this.node.x) {
-                    return -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+        if (this.target.name == "Enemy") {
+            if (this.target.position != this.node.position) {
+                if (this.target.y > this.node.y) {
+                    if (this.target.x < this.node.x) {
+                        return -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+                    }
+                    else {
+                        return Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+                    }
                 }
                 else {
-                    return Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI;
+                    if (this.target.x > this.node.x) {
+                        return -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+                    }
+                    else {
+                        return Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+                    }
                 }
             }
-            else {
-                if (this.target.x > this.node.x) {
-                    return -Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+        }
+        else {
+            let position = this.target.parent.convertToWorldSpaceAR(this.target.position);
+            let point = new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, position.y - Mng.mng.logic.player.halfHeight);
+            if (point != this.node.position) {
+                if (point.y > this.node.y) {
+                    if (point.x < this.node.x) {
+                        return -Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI;
+                    }
+                    else {
+                        return Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI;
+                    }
                 }
                 else {
-                    return Math.atan(Math.abs((this.node.x - this.target.x) / (this.node.y - this.target.y))) * 180 / Math.PI + 180;
+                    if (point.x > this.node.x) {
+                        return -Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI + 180;
+                    }
+                    else {
+                        return Math.atan(Math.abs((this.node.x - point.x) / (this.node.y - point.y))) * 180 / Math.PI + 180;
+                    }
                 }
             }
         }

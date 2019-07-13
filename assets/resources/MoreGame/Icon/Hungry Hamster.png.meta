@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "753ff1fa-0f7e-4bdc-a191-4d5edf385824",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Hungry Hamster": {
+      "ver": "1.0.3",
+      "uuid": "8fde6734-cdc4-4550-9105-75847131ffe6",
+      "rawTextureUuid": "753ff1fa-0f7e-4bdc-a191-4d5edf385824",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 120,
+      "height": 120,
+      "rawWidth": 120,
+      "rawHeight": 120,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

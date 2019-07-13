@@ -22,5 +22,6 @@ export default class ElementMoreGame extends cc.Component {
     }
     public Swicth() {
         FbSdk.sdk.SwitchGame(this.idGame);
+        FbSdk.sdk.LogEvent("Switch Game " + this.nameGame.string);
     }
 }

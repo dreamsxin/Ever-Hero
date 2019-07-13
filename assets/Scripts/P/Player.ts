@@ -3,12 +3,17 @@ import Mathf from "../M/Mathf";
 import PlayerPrefs from "./PlayerPrefs";
 import MngHero from "../M/MngHero";
 import MngSound from "../M/MngSound";
+import Pet from "./Pet";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class Player extends cc.Component {
 
+    @property(cc.Node)
+    public body: cc.Node;
+    @property(cc.Node)
+    public wingPlayer1: cc.Node[] = new Array();
     @property(cc.Animation)
     public anim: cc.Animation;
     @property(sp.Skeleton)
@@ -20,8 +25,8 @@ export default class Player extends cc.Component {
     @property(cc.Sprite)
     public hpFill: cc.Sprite;
 
-    @property(cc.Node)
-    public pet: cc.Node[] = new Array();
+    @property(Pet)
+    public pet: Pet[] = new Array();
 
 
     public index: number = 0;
@@ -43,9 +48,11 @@ export default class Player extends cc.Component {
     private isShield: boolean = false;
     private hp: number = 5;
     private hpTmp: number = 5;
+    private isPetLeft: boolean = true;
 
 
     start() {
+
         this.InitBasic();
         this.InitControl();
         this.InitShoot();
@@ -59,14 +66,29 @@ export default class Player extends cc.Component {
         this.hp = this.hpTmp = MngHero.data[this.index].hp[PlayerPrefs.GetNumber("LevelUpgrade" + this.index)];
         this.hpFill.fillRange = 1;
         for (let i = 0; i < this.pet.length; i++) {
-            if (PlayerPrefs.GetNumber("SelectPet" + (i == 0 ? "Left" : "Right"), -1) >= 0 && !this.pet[i].active)
-                this.pet[i].active = true;
+            if (!this.pet[i].node.active) {
+                if (this.pet[i].index == -1 && PlayerPrefs.GetNumber("SelectPet" + (i == 0 ? "Left" : "Right"), -1) >= 0) {
+                    this.pet[i].Init();
+                    this.isPetLeft = (i != 0);
+                }
+                else if (this.pet[i].index > -1)
+                    this.pet[i].ChangePet();
+            }
         }
-        this.isShield = true
+        this.isShield = true;
         this.effectShield.node.active = true;
         this.effectShield.setAnimation(0, "animation", true);
         this.unschedule(this.UnShield);
         this.scheduleOnce(this.UnShield, 5);
+    }
+    private ChangeHero(index: number) {
+        this.index = index;
+        this.hpTmp = MngHero.data[this.index].hp[PlayerPrefs.GetNumber("LevelUpgrade" + this.index)];
+        this.damageUpgrade = MngHero.data[this.index].power[PlayerPrefs.GetNumber("LevelUpgrade" + this.index)];
+        this.coinUpgrade = MngHero.data[this.index].coin[PlayerPrefs.GetNumber("LevelUpgrade" + this.index)];
+        this.petUpgrade = MngHero.data[this.index].pet[PlayerPrefs.GetNumber("LevelUpgrade" + this.index)];
+        this.anim.play("Player" + (this.index + 1));
+        this.hpFill.fillRange = this.hp / this.hpTmp;
     }
     private InitControl() {
         this.halfWidth = cc.director.getWinSize().width / 2;
@@ -408,82 +430,82 @@ export default class Player extends cc.Component {
         let tmp;
         if (this.countBullet == 1) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
         }
         else if (this.countBullet == 2) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 25 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 25 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
         }
         else if (this.countBullet == 3) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
         }
         else if (this.countBullet == 4) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
         }
         else if (this.countBullet == 5) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 40 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
         }
         else if (this.countBullet == 6) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
         }
         else if (this.countBullet == 7) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(7, 1, 18, 1 * this.damageUpgrade);
+            tmp.Shoot(7, 1, 18, 1.5 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
         }
         else if (this.countBullet == 8) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
         }
         else if (this.countBullet == 9) {
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 20 + Mathf.Random(-5, 5), this.node.y + 25), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), 0);
-            tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
+            tmp.Shoot(8, 1, 18, 3 * this.damageUpgrade);
             if (Mathf.Random(0, 100) < 20) {
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 2);
-                tmp.Shoot(9, 2, 25, 2);
+                tmp.Shoot(9, 2, 25, 3);
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), -2);
-                tmp.Shoot(9, 2, 25, 2);
+                tmp.Shoot(9, 2, 25, 3);
             }
         }
         else if (this.countBullet == 10) {
@@ -497,9 +519,9 @@ export default class Player extends cc.Component {
             tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
             if (Mathf.Random(0, 100) < 20) {
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 2);
-                tmp.Shoot(9, 3, 25, 2.5 * this.damageUpgrade);
+                tmp.Shoot(9, 3, 25, 4 * this.damageUpgrade);
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), -2);
-                tmp.Shoot(9, 3, 25, 2.5 * this.damageUpgrade);
+                tmp.Shoot(9, 3, 25, 4 * this.damageUpgrade);
             }
         }
         else if (this.countBullet == 11) {
@@ -513,11 +535,11 @@ export default class Player extends cc.Component {
             tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
             tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), 0);
             tmp.Shoot(8, 1, 18, 2 * this.damageUpgrade);
-            if (Mathf.Random(0, 100) < 30) {
+            if (Mathf.Random(0, 100) < 40) {
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x - 55 + Mathf.Random(-5, 5), this.node.y), 2);
-                tmp.Shoot(9, 3, 25, 2.5 * this.damageUpgrade);
+                tmp.Shoot(9, 3, 25, 4 * this.damageUpgrade);
                 tmp = Mng.mng.pool.GetBulletPlayer(new cc.Vec2(this.node.x + 55 + Mathf.Random(-5, 5), this.node.y), -2);
-                tmp.Shoot(9, 3, 25, 2.5 * this.damageUpgrade);
+                tmp.Shoot(9, 3, 25, 4 * this.damageUpgrade);
             }
         }
     }
@@ -583,7 +605,7 @@ export default class Player extends cc.Component {
     onCollisionEnter(other) {
         if (other.node.group == "Enemy") {
             Mng.mng.pool.GetExEnemy(other.node.position).Play();
-            this.GetHit(1);
+            this.GetHit(0.5);
             MngSound.mng.PlaySound(5);
             Mng.mng.logic.countEnemy--;
             other.node.active = false;
@@ -651,20 +673,65 @@ export default class Player extends cc.Component {
                 MngSound.mng.PlaySound(1);
                 Mng.mng.ui.SetGold(this.coinUpgrade);
             }
+            else if (other.tag > 5 && other.tag <= 9) {//ChangeHero
+                MngSound.mng.PlaySound(4);
+                this.ChangeHero(Number(other.tag) - 6);
+                this.InitShoot();
+            }
+            else if (other.tag >= 10 && other.tag <= 13) {//ChangePet
+                MngSound.mng.PlaySound(4);
+                if (this.isPetLeft)
+                    this.pet[0].ChangePet(Number(other.tag) - 10);
+                else
+                    this.pet[1].ChangePet(Number(other.tag) - 10);
+                this.isPetLeft = !this.isPetLeft;
+            }
         }
     }
     public GetHit(damage: number) {
         if (!this.effectShield.node.active && !Mng.mng.ui.isWin) {
+            if (this.index == 0 || this.index == 2)
+                MngSound.mng.PlaySound(23);
+            else
+                MngSound.mng.PlaySound(24);
+            this.schedule(this.OpacityPlayer, 0.3);
+            this.scheduleOnce(this.UnOpacityPlayer, 2);
             this.hp -= damage;
             this.hpFill.fillRange = this.hp / this.hpTmp;
             if (this.hp <= 0) {
                 MngSound.mng.PlaySound(17);
                 for (let i = 0; i < this.pet.length; i++) {
-                    if (this.pet[i].active)
-                        this.pet[i].active = false;
+                    if (this.pet[i].node.active)
+                        this.pet[i].node.active = false;
                 }
                 Mng.mng.ui.SaveMe();
             }
         }
+    }
+    private checkOpacity: boolean;
+    private OpacityPlayer() {
+        if (!this.checkOpacity) {
+            this.body.opacity = 150;
+            if (this.index == 0)
+                for (let i = 0; i < 2; i++) {
+                    this.wingPlayer1[i].opacity = 150;
+                }
+        }
+        else {
+            this.body.opacity = 255;
+            if (this.index == 0)
+                for (let i = 0; i < 2; i++) {
+                    this.wingPlayer1[i].opacity = 255;
+                }
+        }
+        this.checkOpacity = !this.checkOpacity;
+    }
+    private UnOpacityPlayer() {
+        this.unschedule(this.OpacityPlayer);
+        this.body.opacity = 255;
+        if (this.index == 0)
+            for (let i = 0; i < 2; i++) {
+                this.wingPlayer1[i].opacity = 255;
+            }
     }
 }

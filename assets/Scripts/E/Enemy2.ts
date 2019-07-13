@@ -2,6 +2,7 @@ import MngLogic from "../M/MngLogic";
 import Mng from "../M/Mng";
 import Mathf from "../M/Mathf";
 import MngSound from "../M/MngSound";
+import WarningEnemy from "../W/WarningEnemy";
 
 const { ccclass, property } = cc._decorator;
 
@@ -175,16 +176,16 @@ export default class Enemy2 extends cc.Component {
     private Shoot4() {
         this.scheduleOnce(() => {
             let position = this.node.convertToWorldSpaceAR(this.spr.node.position);
-            Mng.mng.pool.GetBulletEnemy(new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, (position.y - Mng.mng.logic.player.halfHeight)), 180 + Mathf.Random(-10, 10)).Init(2, 4, 400, 1);
+            Mng.mng.pool.GetBulletEnemy(new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, (position.y - Mng.mng.logic.player.halfHeight)), 180 + Mathf.Random(-10, 10)).Init(2, 4, 400, 0.5);
             MngSound.mng.PlaySound(Mathf.Random(6, 7));
             this.schedule(() => {
                 MngSound.mng.PlaySound(Mathf.Random(6, 7));
                 let position = this.node.convertToWorldSpaceAR(this.spr.node.position);
-                Mng.mng.pool.GetBulletEnemy(new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, (position.y - Mng.mng.logic.player.halfHeight)), 180 + Mathf.Random(-10, 10)).Init(2, 4, 400, 1);
+                Mng.mng.pool.GetBulletEnemy(new cc.Vec2(position.x - Mng.mng.logic.player.halfWidth, (position.y - Mng.mng.logic.player.halfHeight)), 180 + Mathf.Random(-10, 10)).Init(2, 4, 400, 0.5);
             }, this.timeAttack);
         }, Mathf.Random(0.1, 0.5));
     }
-    public Collision(other) {
+    public CollisionEnter(other) {
         if (other.node.group == "BulletPlayer") {
             if (!this.isDie) {
                 let tmp = Mng.mng.pool.bulletPlayers[Mng.mng.pool.bulletPlayers.findIndex(b => b.node == other.node)];
@@ -232,22 +233,42 @@ export default class Enemy2 extends cc.Component {
                 }
             }
             else if (other.tag == 2 && !this.isHitLaser) {
+                this.smoke = Mng.mng.pool.GetSmoke(this.node);
+                this.smoke.node.setPosition(0, 0);
+                this.smoke.node.active = true;
+                this.smoke.resetSystem();
                 this.isHitLaser = true;
                 this.schedule(this.HitLaser, 0.1);
             }
         }
         else if (other.node.group == "Bottom") {
             Mng.mng.logic.countEnemy--;
+            this.unscheduleAllCallbacks();
+            this.node.stopAllActions();
             this.node.active = false;
         }
         else if (other.node.group == "Left" || other.node.group == "Right") {
-            if (this.index == 4) {
+            if (this.index == 4 && (other.node.name == "Left2" || other.node.name == "Right2")) {
                 Mng.mng.logic.countEnemy--;
+                this.unscheduleAllCallbacks();
+                this.node.stopAllActions();
                 this.node.active = false;
+            }
+            else if (this.index == 7 || this.index == 8) {
+                if (other.node.group == "Left" && other.node.name == "Left") {
+                    this.warningTmp = Mng.mng.pool.GetWarningEnemy(new cc.Vec2(-316 + Mathf.Random(0, 20), this.node.y));
+                    this.warningTmp.Init(this.node);
+                }
+                else if (other.node.group == "Right" && other.node.name == "Right") {
+                    this.warningTmp = Mng.mng.pool.GetWarningEnemy(new cc.Vec2(316 - Mathf.Random(0, 20), this.node.y));
+                    this.warningTmp.Init(this.node);
+                }
             }
 
         }
     }
+    private smoke: cc.ParticleSystem;
+    private warningTmp: WarningEnemy;
     private isHitLaser: boolean = false;
     private HitLaser() {
         if (this.hp > 0) {
@@ -258,6 +279,7 @@ export default class Enemy2 extends cc.Component {
                 this.hpFill.node.parent.active = true;
             this.hpFill.fillRange = this.hp / this.hpTmp;
             if (this.hp <= 0) {
+                this.smoke.node.active = false;
                 let tmp = Mng.mng.pool.GetExEnemy(this.node.position);
                 tmp.Play();
                 MngSound.mng.PlaySound(3);
@@ -270,6 +292,19 @@ export default class Enemy2 extends cc.Component {
                 Mng.mng.logic.countEnemy--;
                 this.node.active = false;
             }
+        }
+    }
+    public CollisionExit(other) {
+        if (other.node.group == "BulletPet") {
+            if (other.tag == 2 && this.isHitLaser) {
+                this.isHitLaser = false;
+                this.smoke.node.active = false;
+                this.unschedule(this.HitLaser);
+            }
+        }
+        else if ((other.node.group == "Left" && other.node.name == "Left") || (other.node.group == "Right" && other.node.name == "Right")) {
+            if (this.warningTmp != null)
+                this.warningTmp.node.active = false;
         }
     }
 }

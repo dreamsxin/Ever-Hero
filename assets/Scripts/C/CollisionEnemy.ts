@@ -9,6 +9,9 @@ export default class CollisionEnemy extends cc.Component {
     public parent: Enemy2;
 
     onCollisionEnter(other) {
-        this.parent.Collision(other);
+        this.parent.CollisionEnter(other);
+    }
+    onCollisionExit(other) {
+        this.parent.CollisionExit(other);
     }
 }

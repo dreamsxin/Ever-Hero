@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "9cd0b84e-37f7-4d5e-8b24-b1feed8e7e1f",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "Candy Jewel": {
+      "ver": "1.0.3",
+      "uuid": "4af0bc73-07df-4f18-beba-cf1a93089e81",
+      "rawTextureUuid": "9cd0b84e-37f7-4d5e-8b24-b1feed8e7e1f",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 120,
+      "height": 120,
+      "rawWidth": 120,
+      "rawHeight": 120,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

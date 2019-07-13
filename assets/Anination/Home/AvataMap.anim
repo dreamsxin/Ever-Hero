@@ -1,0 +1,29 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "AvataMap",
+  "_objFlags": 0,
+  "_rawFiles": null,
+  "_duration": 0.4166666666666667,
+  "sample": 24,
+  "speed": 1,
+  "wrapMode": "22",
+  "curveData": {
+    "paths": {
+      "Avata": {
+        "props": {
+          "y": [
+            {
+              "frame": 0,
+              "value": 0
+            },
+            {
+              "frame": 0.4166666666666667,
+              "value": 70
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": []
+}
